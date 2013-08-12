@@ -79,18 +79,18 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
   private TouchDelegate touchContainer;
 
   public SwipeMenu() {
-    this(APPEARANCE, /*allowSwipe*/ true);
+    this(APPEARANCE, /*toggleAutomatically*/ true);
   }
   
-  public SwipeMenu(boolean allowSwipe) {
-    this(APPEARANCE, allowSwipe);
+  public SwipeMenu(boolean toggleAutomatically) {
+    this(APPEARANCE, toggleAutomatically);
   }
 
   public SwipeMenu(SwipeMenuAppearance appearance) {
-    this(appearance, /*allowSwipe*/ true);
+    this(appearance, /*toggleAutomatically*/ true);
   }
   
-  public SwipeMenu(SwipeMenuAppearance appearance, boolean allowSwipe) {
+  public SwipeMenu(SwipeMenuAppearance appearance, boolean toggleAutomatically) {
 
     this.appearance = appearance;
     state = STATE.CLOSED;
@@ -99,7 +99,7 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
 
     touchContainer = new TouchDelegate(main);
 
-    initHandlers(allowSwipe);
+    initHandlers(toggleAutomatically);
 
   }
 
@@ -155,8 +155,8 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
     }
   }
 
-  private void initHandlers(boolean allowSwipe) {
-    if (allowSwipe) {
+  private void initHandlers(boolean toggleAutomatically) {
+    if (toggleAutomatically) {
       touchContainer.addSwipeStartHandler(new SwipeStartHandler() {
 
         @Override
@@ -185,17 +185,17 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
 
         }
       });
+      
+      touchContainer.addTapHandler(new TapHandler() {
+
+        @Override
+        public void onTap(TapEvent event) {
+
+          handleTap(event);
+
+        }
+      });
     }
-
-    touchContainer.addTapHandler(new TapHandler() {
-
-      @Override
-      public void onTap(TapEvent event) {
-
-        handleTap(event);
-
-      }
-    });
 
     wrap.addDomHandler(new TransitionEndHandler() {
 
