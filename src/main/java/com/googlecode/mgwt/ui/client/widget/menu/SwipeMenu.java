@@ -77,22 +77,25 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
   private int startX;
 
   private TouchDelegate touchContainer;
+  
+  private final boolean startsOpen;
 
   public SwipeMenu() {
-    this(APPEARANCE, /*toggleAutomatically*/ true);
+    this(APPEARANCE, /*toggleAutomatically*/ true, /*startsOpen*/ false);
   }
   
-  public SwipeMenu(boolean toggleAutomatically) {
-    this(APPEARANCE, toggleAutomatically);
+  public SwipeMenu(boolean toggleAutomatically, boolean startsOpen) {
+    this(APPEARANCE, toggleAutomatically, startsOpen);
   }
 
   public SwipeMenu(SwipeMenuAppearance appearance) {
-    this(appearance, /*toggleAutomatically*/ true);
+    this(appearance, /*toggleAutomatically*/ true, /*startsOpen*/ false);
   }
   
-  public SwipeMenu(SwipeMenuAppearance appearance, boolean toggleAutomatically) {
+  public SwipeMenu(SwipeMenuAppearance appearance, boolean toggleAutomatically, boolean startsOpen) {
 
     this.appearance = appearance;
+    this.startsOpen = startsOpen;
     state = STATE.CLOSED;
 
     initWidget(appearance.uiBinder().createAndBindUi(this));
@@ -224,17 +227,18 @@ public class SwipeMenu extends Composite implements HasOpenHandlers<SwipeMenu>,
   @Override
   protected void onLoad() {
     super.onLoad();
-    closeMenu();
-    // work around for CSS Resource style injection
-    Scheduler.get().scheduleDeferred(new ScheduledCommand() {
-
-      @Override
-      public void execute() {
+    if (!startsOpen) {
         closeMenu();
-
-      }
-    });
-
+        // work around for CSS Resource style injection
+        Scheduler.get().scheduleDeferred(new ScheduledCommand() {
+            
+            @Override
+            public void execute() {
+                closeMenu();
+                
+            }
+        });
+    }
   }
 
   private void closeMenu() {
